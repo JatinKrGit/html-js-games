@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Breakout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hud" aria-label="Game status">
+      <div class="hud__item">
+        <span>Score</span>
+        <strong id="score">0</strong>
+      </div>
+      <div class="hud__item">
+        <span>High</span>
+        <strong id="highScore">0</strong>
+      </div>
+      <div class="hud__item">
+        <span>Lives</span>
+        <strong id="lives">3</strong>
+      </div>
+      <div class="hud__item">
+        <span>Level</span>
+        <strong id="level">1</strong>
+      </div>
+    </header>
+
+    <section class="game-frame" aria-label="Neon Breakout game">
+      <canvas id="gameCanvas" width="960" height="640"></canvas>
+      <div id="overlay" class="overlay">
+        <div class="overlay__panel">
+          <p id="overlayKicker" class="overlay__kicker">Neon Breakout</p>
+          <h1 id="overlayTitle">Break the Grid</h1>
+          <p id="overlayText">Move the paddle, catch power-ups, and clear every breakable brick.</p>
+          <button id="primaryButton" type="button">Start Game</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="controls" aria-label="Controls">
+      <span>Move: A/D or Arrow Keys</span>
+      <span>Mouse/Touch supported</span>
+      <span>Pause: P or Space</span>
+      <span>Laser: F</span>
+    </footer>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
