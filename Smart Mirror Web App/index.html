@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A polished smart mirror web app with webcam mirroring, ring light, compliments, particles, screenshots, and saved preferences."
+    />
+    <title>Smart Mirror</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas class="ambient-canvas" id="ambientCanvas" aria-hidden="true"></canvas>
+
+    <main class="app-shell">
+      <section class="mirror-stage" aria-label="Smart mirror">
+        <div class="mirror-frame" id="mirrorFrame">
+          <div class="ring-glow" id="ringGlow" aria-hidden="true"></div>
+          <video
+            class="mirror-video"
+            id="mirrorVideo"
+            playsinline
+            muted
+            autoplay
+            aria-label="Live mirrored webcam feed"
+          ></video>
+
+          <div class="mirror-placeholder" id="mirrorPlaceholder">
+            <div class="placeholder-orbit" aria-hidden="true"></div>
+            <p>Mirror paused</p>
+          </div>
+
+          <div class="mirror-vignette" aria-hidden="true"></div>
+          <div class="activation-pulse" id="activationPulse" aria-hidden="true"></div>
+
+          <div class="status-pill" id="statusPill" role="status" aria-live="polite">
+            Camera ready
+          </div>
+
+          <div class="compliment-wrap is-hidden" id="complimentWrap" aria-live="polite">
+            <p class="compliment-text" id="complimentText">You’re doing great</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="control-panel" aria-label="Mirror controls">
+        <div class="brand-block">
+          <p class="eyebrow">Confidence Mirror</p>
+          <h1>Smart Mirror</h1>
+        </div>
+
+        <div class="controls-grid">
+          <button class="control-button is-primary" id="mirrorToggle" type="button">
+            <span class="button-icon" aria-hidden="true">M</span>
+            <span>Mirror ON</span>
+          </button>
+          <button class="control-button" id="ringToggle" type="button">
+            <span class="button-icon" aria-hidden="true">O</span>
+            <span>Ring Light</span>
+          </button>
+          <button class="control-button" id="beautyToggle" type="button">
+            <span class="button-icon" aria-hidden="true">*</span>
+            <span>Beauty Filter</span>
+          </button>
+          <button class="control-button" id="musicToggle" type="button">
+            <span class="button-icon" aria-hidden="true">N</span>
+            <span>Music OFF</span>
+          </button>
+          <button class="control-button wide" id="screenshotButton" type="button">
+            <span class="button-icon" aria-hidden="true">[]</span>
+            <span>Capture Glow Shot</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="main.js" defer></script>
+  </body>
+</html>
