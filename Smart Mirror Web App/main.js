@@ -1,7 +1,7 @@
 "use strict";
 
 const CONFIG = {
-  complimentIntervalMs: 8200,
+  complimentIntervalMs: 6200,
   complimentFadeMs: 420,
   attentionScanMs: 650,
   minFaceAreaRatio: 0.015,
