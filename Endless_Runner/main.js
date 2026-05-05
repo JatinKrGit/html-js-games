@@ -225,41 +225,63 @@ class Player {
   render(ctx, camera, theme) {
     const pos = camera.worldToScreen(this.x, 0, this.y);
     const scale = camera.scale * pos.p;
-    const bodyH = (this.isSliding ? 92 : 168) * scale;
-    const bodyW = (this.isSliding ? 118 : 82) * scale;
     const bob = this.isJumping || this.isSliding ? 0 : Math.sin(this.runTime * 15) * 6 * scale;
     const x = pos.x;
     const feet = pos.y + bob;
+    const run = Math.sin(this.runTime * 16);
+    const lift = Math.abs(Math.cos(this.runTime * 16));
+    const bodyColor = theme.player;
 
     ctx.save();
     ctx.translate(x, feet);
+
     ctx.fillStyle = "rgba(0,0,0,0.28)";
     ctx.beginPath();
-    ctx.ellipse(0, 20 * scale, 58 * scale, 12 * scale, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 20 * scale, (this.isSliding ? 72 : 58) * scale, 12 * scale, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = theme.player;
-    roundRect(ctx, -bodyW / 2, -bodyH, bodyW, bodyH, 16 * scale);
-    ctx.fill();
+    if (this.isSliding) this.renderSlidingRunner(ctx, scale, bodyColor, run);
+    else this.renderUprightRunner(ctx, scale, bodyColor, run, lift);
 
-    ctx.fillStyle = "#101820";
-    const visorY = -bodyH + 38 * scale;
-    roundRect(ctx, -bodyW * 0.32, visorY, bodyW * 0.64, 24 * scale, 8 * scale);
-    ctx.fill();
-
-    ctx.strokeStyle = "#f6fbff";
-    ctx.lineWidth = 5 * scale;
-    ctx.lineCap = "round";
-    const stride = Math.sin(this.runTime * 16) * 22 * scale;
-    if (!this.isSliding) {
-      ctx.beginPath();
-      ctx.moveTo(-20 * scale, -8 * scale);
-      ctx.lineTo(-34 * scale + stride, 28 * scale);
-      ctx.moveTo(20 * scale, -8 * scale);
-      ctx.lineTo(34 * scale - stride, 28 * scale);
-      ctx.stroke();
-    }
     ctx.restore();
+  }
+
+  renderUprightRunner(ctx, scale, bodyColor, run, lift) {
+    const stride = run * 25 * scale;
+    const shoulderRoll = run * 7 * scale;
+    const hipY = -72 * scale;
+    const shoulderY = -128 * scale;
+
+    drawLimb(ctx, -18 * scale, hipY, -34 * scale - stride, 7 * scale - lift * 9 * scale, 12 * scale, "#101820", "#2a3540");
+    drawLimb(ctx, 18 * scale, hipY, 34 * scale + stride, 7 * scale - (1 - lift) * 9 * scale, 12 * scale, "#101820", "#2a3540");
+    drawShoe(ctx, -40 * scale - stride, 13 * scale - lift * 9 * scale, scale, run < 0 ? 1 : 0.72);
+    drawShoe(ctx, 40 * scale + stride, 13 * scale - (1 - lift) * 9 * scale, scale, run > 0 ? 1 : 0.72);
+
+    drawLimb(ctx, -30 * scale, -113 * scale, -51 * scale + stride * 0.45, -67 * scale, 10 * scale, "#f6fbff", "#9fb8c8");
+    drawLimb(ctx, 30 * scale, -113 * scale, 52 * scale - stride * 0.45, -70 * scale, 10 * scale, "#f6fbff", "#9fb8c8");
+
+    drawBody3D(ctx, -38 * scale + shoulderRoll * 0.14, -146 * scale, 76 * scale, 82 * scale, 17 * scale, bodyColor);
+    drawChestPanel(ctx, scale);
+    drawHead3D(ctx, 0, -175 * scale, 31 * scale, scale, bodyColor);
+
+    drawJoint(ctx, -31 * scale, -115 * scale, 7 * scale, "#f6fbff");
+    drawJoint(ctx, 31 * scale, -115 * scale, 7 * scale, "#f6fbff");
+  }
+
+  renderSlidingRunner(ctx, scale, bodyColor, run) {
+    ctx.rotate(-0.07);
+    drawLimb(ctx, -18 * scale, -44 * scale, -64 * scale, -12 * scale, 13 * scale, "#101820", "#2a3540");
+    drawLimb(ctx, 18 * scale, -44 * scale, 65 * scale, -13 * scale, 13 * scale, "#101820", "#2a3540");
+    drawShoe(ctx, -72 * scale, -8 * scale, scale, 0.82);
+    drawShoe(ctx, 72 * scale, -9 * scale, scale, 0.82);
+
+    drawLimb(ctx, -33 * scale, -84 * scale, -68 * scale, -54 * scale + run * 5 * scale, 10 * scale, "#f6fbff", "#9fb8c8");
+    drawLimb(ctx, 29 * scale, -83 * scale, 65 * scale, -55 * scale - run * 5 * scale, 10 * scale, "#f6fbff", "#9fb8c8");
+
+    drawBody3D(ctx, -60 * scale, -106 * scale, 120 * scale, 58 * scale, 18 * scale, bodyColor);
+    drawHead3D(ctx, 43 * scale, -112 * scale, 28 * scale, scale, bodyColor);
+    drawJoint(ctx, -38 * scale, -85 * scale, 7 * scale, "#f6fbff");
+    drawJoint(ctx, 35 * scale, -84 * scale, 7 * scale, "#f6fbff");
   }
 }
 
@@ -766,6 +788,137 @@ class Game {
       ctx.fillText(label, x + 52, y + 10);
     });
   }
+}
+
+function drawBody3D(ctx, x, y, w, h, r, color) {
+  const depth = Math.max(7, w * 0.16);
+  const bodyGradient = ctx.createLinearGradient(x, y, x + w, y + h);
+  bodyGradient.addColorStop(0, lightenColor(color, 0.18));
+  bodyGradient.addColorStop(0.52, color);
+  bodyGradient.addColorStop(1, darkenColor(color, 0.34));
+
+  ctx.fillStyle = darkenColor(color, 0.45);
+  roundRect(ctx, x + depth * 0.42, y + depth * 0.55, w, h, r);
+  ctx.fill();
+
+  ctx.fillStyle = bodyGradient;
+  roundRect(ctx, x, y, w, h, r);
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(255,255,255,0.2)";
+  roundRect(ctx, x + w * 0.13, y + h * 0.12, w * 0.2, h * 0.67, r * 0.45);
+  ctx.fill();
+
+  ctx.strokeStyle = "rgba(255,255,255,0.28)";
+  ctx.lineWidth = Math.max(1, w * 0.035);
+  ctx.beginPath();
+  ctx.moveTo(x + w * 0.2, y + h * 0.1);
+  ctx.lineTo(x + w * 0.8, y + h * 0.1);
+  ctx.stroke();
+}
+
+function drawChestPanel(ctx, scale) {
+  const panelGradient = ctx.createLinearGradient(-20 * scale, -128 * scale, 24 * scale, -78 * scale);
+  panelGradient.addColorStop(0, "#17242d");
+  panelGradient.addColorStop(1, "#071018");
+  ctx.fillStyle = panelGradient;
+  roundRect(ctx, -23 * scale, -126 * scale, 46 * scale, 44 * scale, 9 * scale);
+  ctx.fill();
+
+  ctx.fillStyle = "#ffcc4a";
+  ctx.beginPath();
+  ctx.moveTo(0, -119 * scale);
+  ctx.lineTo(12 * scale, -102 * scale);
+  ctx.lineTo(0, -85 * scale);
+  ctx.lineTo(-12 * scale, -102 * scale);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawHead3D(ctx, x, y, radius, scale, color) {
+  const helmet = ctx.createRadialGradient(x - radius * 0.35, y - radius * 0.45, radius * 0.2, x, y, radius * 1.2);
+  helmet.addColorStop(0, lightenColor(color, 0.42));
+  helmet.addColorStop(0.58, color);
+  helmet.addColorStop(1, darkenColor(color, 0.42));
+
+  ctx.fillStyle = "rgba(0,0,0,0.24)";
+  ctx.beginPath();
+  ctx.ellipse(x + radius * 0.18, y + radius * 0.22, radius * 0.92, radius * 1.04, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = helmet;
+  ctx.beginPath();
+  ctx.ellipse(x, y, radius * 0.88, radius, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  const visor = ctx.createLinearGradient(x - radius * 0.65, y - radius * 0.08, x + radius * 0.6, y + radius * 0.22);
+  visor.addColorStop(0, "#101820");
+  visor.addColorStop(0.55, "#223441");
+  visor.addColorStop(1, "#071018");
+  ctx.fillStyle = visor;
+  roundRect(ctx, x - radius * 0.62, y - radius * 0.1, radius * 1.15, radius * 0.46, 8 * scale);
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(255,255,255,0.38)";
+  roundRect(ctx, x - radius * 0.45, y - radius * 0.02, radius * 0.38, radius * 0.09, 3 * scale);
+  ctx.fill();
+}
+
+function drawLimb(ctx, x1, y1, x2, y2, width, colorA, colorB) {
+  const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+  gradient.addColorStop(0, colorA);
+  gradient.addColorStop(1, colorB);
+  ctx.strokeStyle = gradient;
+  ctx.lineWidth = width;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  const midX = (x1 + x2) * 0.5;
+  const midY = (y1 + y2) * 0.5 - width * 0.5;
+  ctx.quadraticCurveTo(midX, midY, x2, y2);
+  ctx.stroke();
+}
+
+function drawJoint(ctx, x, y, radius, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawShoe(ctx, x, y, scale, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  const w = 42 * scale;
+  const h = 17 * scale;
+  const gradient = ctx.createLinearGradient(x - w * 0.5, y - h, x + w * 0.5, y);
+  gradient.addColorStop(0, "#2d3943");
+  gradient.addColorStop(1, "#071018");
+  ctx.fillStyle = gradient;
+  roundRect(ctx, x - w * 0.5, y - h, w, h, 6 * scale);
+  ctx.fill();
+  ctx.fillStyle = "#ffcc4a";
+  ctx.fillRect(x - w * 0.28, y - h * 0.32, w * 0.55, 3 * scale);
+  ctx.restore();
+}
+
+function lightenColor(color, amount) {
+  const [r, g, b] = colorToRgb(color);
+  return `rgb(${Math.round(lerp(r, 255, amount))}, ${Math.round(lerp(g, 255, amount))}, ${Math.round(lerp(b, 255, amount))})`;
+}
+
+function darkenColor(color, amount) {
+  const [r, g, b] = colorToRgb(color);
+  return `rgb(${Math.round(r * (1 - amount))}, ${Math.round(g * (1 - amount))}, ${Math.round(b * (1 - amount))})`;
+}
+
+function colorToRgb(color) {
+  const rgb = color.match(/\d+/g);
+  if (rgb && rgb.length >= 3) return rgb.slice(0, 3).map(Number);
+  if (color.startsWith("#") && color.length === 7) {
+    return [parseInt(color.slice(1, 3), 16), parseInt(color.slice(3, 5), 16), parseInt(color.slice(5, 7), 16)];
+  }
+  return [38, 230, 164];
 }
 
 function intersects(a, b) {
