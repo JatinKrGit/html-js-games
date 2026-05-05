@@ -1,7 +1,7 @@
 "use strict";
 
 const CONFIG = {
-  complimentIntervalMs: 4200,
+  complimentIntervalMs: 8200,
   complimentFadeMs: 420,
   attentionScanMs: 650,
   minFaceAreaRatio: 0.015,
@@ -29,11 +29,21 @@ const CONFIG = {
 
 const COMPLIMENTS = [
   "Look who's radiant today",
-  "You're doing great",
   "That glow is all yours",
-  "Confidence looks good on you",
-  "You've got this",
-  "Today gets your best energy",
+  "Hey, you look lovely",
+  "That smile suits you",
+  "You’re glowing today",  
+  "There’s that smile",
+  "You look really nice today",
+  "Soft and beautiful",
+  "You carry yourself well",
+  "You look confident today",
+  "You’re quietly stunning",
+  "You feel calm and strong",
+  "You look happy today",
+  "Just you—and that’s perfect",
+  "You shine in your own way",
+  "You look good, don’t overthink it",
   "Your smile changes the room",
   "Keep showing up for yourself"
 ];
@@ -533,7 +543,7 @@ class UIController {
       ? "Music ON"
       : "Music OFF";
 
-    const shouldShowCompliment = this.state.mirrorOn && this.state.attentionSupported && this.state.isLooking;
+    const shouldShowCompliment = this.state.mirrorOn && (this.state.isLooking || !this.state.attentionSupported);
     this.elements.complimentWrap.classList.toggle("is-hidden", !shouldShowCompliment);
   }
 
@@ -562,7 +572,7 @@ class UIController {
     this.applyState();
 
     if (!isSupported && this.state.mirrorOn) {
-      this.updateStatus("Face detection unavailable; compliments hidden", true);
+      this.updateStatus("Mirror live", false);
     }
   }
 
@@ -575,7 +585,7 @@ class UIController {
   }
 
   nextCompliment() {
-    if (!this.state.isLooking) {
+    if (!this.state.isLooking && this.state.attentionSupported) {
       return;
     }
 
