@@ -1,16 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>My Games</title>
-</head>
-<body>
-  <h1>🎮 My Games</h1>
 
-  <ul>
-    <li><a href="Snake/index.html">Snake</a></li>
-    <li><a href="Endless_Runner/index.html">Endless Runner</a></li>
-    <li><a href="Breakout/index.html">Breakout (Arkanoid-style)</a></li>
-  </ul>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      width: 220px;
+      padding: 20px;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: #334155;
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #cbd5f5;
+    }
+
+    .play-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .play-btn:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🎮 My JavaScript Games</h1>
+
+  <div class="container">
+
+    <div class="card">
+      <h2>🐍 Snake</h2>
+      <p>Classic snake game. Eat food, grow longer, avoid collisions.</p>
+      <a class="play-btn" href="Snake/">Play Game</a>
+    </div>
+
+    <div class="card">
+      <h2>🏃 Endless Runner</h2>
+      <p>Run, dodge obstacles, and survive as long as possible.</p>
+      <a class="play-btn" href="Endless_Runner/">Play Game</a>
+    </div>
+
+    <div class="card">
+      <h2>🧱 Breakout</h2>
+      <p>Break bricks using a bouncing ball and paddle control.</p>
+      <a class="play-btn" href="Breakout/">Play Game</a>
+    </div>
+
+  </div>
 
 </body>
 </html>
