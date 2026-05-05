@@ -12,7 +12,7 @@
       <div class="game-header">
         <div>
           <h1>Snake</h1>
-          <p class="status" id="status">Use arrow keys to move</p>
+          <p class="status" id="status">Use arrow keys or buttons to move</p>
         </div>
         <div class="score-card" aria-live="polite">
           <span>Score</span>
@@ -21,6 +21,13 @@
       </div>
 
       <canvas id="gameCanvas" width="480" height="480" aria-label="Snake game board"></canvas>
+
+      <div class="direction-pad" aria-label="Movement controls">
+        <button class="direction-button direction-up" type="button" data-direction="up" aria-label="Move up">&uarr;</button>
+        <button class="direction-button direction-left" type="button" data-direction="left" aria-label="Move left">&larr;</button>
+        <button class="direction-button direction-down" type="button" data-direction="down" aria-label="Move down">&darr;</button>
+        <button class="direction-button direction-right" type="button" data-direction="right" aria-label="Move right">&rarr;</button>
+      </div>
 
       <div class="controls">
         <button id="restartButton" type="button">Restart</button>

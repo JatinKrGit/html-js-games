@@ -3,10 +3,17 @@ const context = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
 const statusElement = document.getElementById("status");
 const restartButton = document.getElementById("restartButton");
+const directionButtons = document.querySelectorAll("[data-direction]");
 
 const tileSize = 24;
 const tileCount = canvas.width / tileSize;
 const moveDelay = 110;
+const directions = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 }
+};
 
 let snake;
 let food;
@@ -30,7 +37,7 @@ function resetGame() {
   lastMoveTime = 0;
 
   scoreElement.textContent = score;
-  statusElement.textContent = "Use arrow keys to move";
+  statusElement.textContent = "Use arrow keys or buttons to move";
   placeFood();
 
   cancelAnimationFrame(animationId);
@@ -176,10 +183,10 @@ function endGame() {
 
 function changeDirection(event) {
   const keyDirections = {
-    ArrowUp: { x: 0, y: -1 },
-    ArrowDown: { x: 0, y: 1 },
-    ArrowLeft: { x: -1, y: 0 },
-    ArrowRight: { x: 1, y: 0 }
+    ArrowUp: directions.up,
+    ArrowDown: directions.down,
+    ArrowLeft: directions.left,
+    ArrowRight: directions.right
   };
 
   const requestedDirection = keyDirections[event.key];
@@ -189,6 +196,13 @@ function changeDirection(event) {
   }
 
   event.preventDefault();
+  setDirection(requestedDirection);
+}
+
+function setDirection(requestedDirection) {
+  if (!requestedDirection) {
+    return;
+  }
 
   // Prevent direct reversal into the snake body.
   if (
@@ -201,7 +215,15 @@ function changeDirection(event) {
   nextDirection = requestedDirection;
 }
 
+function handleDirectionButton(event) {
+  const requestedDirection = directions[event.currentTarget.dataset.direction];
+  setDirection(requestedDirection);
+}
+
 document.addEventListener("keydown", changeDirection);
 restartButton.addEventListener("click", resetGame);
+directionButtons.forEach(button => {
+  button.addEventListener("click", handleDirectionButton);
+});
 
 resetGame();
